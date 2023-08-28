@@ -2,9 +2,10 @@
 ### Instructions for using Docker Compose
 ```yaml
 services:
+  # 注意：本应用中token限定为由大小写字母及数字组成，长度为8~16的字符串
   lyrics:
     # 使用 --auth-enable 开启鉴权
-    # 使用 --dynamic-token 启用动态token
+    # 使用 --dynamic-token 启用动态token，从Redis中读取token，从而支持多用户鉴权以及控制有效期
     # 使用 --lyrics-dir=<path> 设置歌词目录
     # 使用 --port=<port> 设置歌词服务端口
     # 使用 --redis-address=<redis—address> 设置Redis服务地址
