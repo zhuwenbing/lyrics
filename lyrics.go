@@ -42,6 +42,8 @@ var redisClient *redis.Client
 func main() {
   config = initConfig()
 
+  http.HandleFunc("/", rootHandler)
+
   http.HandleFunc("/lyrics", lyricsHandler)
 
   port := strconv.Itoa(config.Port)
@@ -50,6 +52,10 @@ func main() {
   if err != nil {
     fmt.Printf("Server failed to start: %v\n", err)
   }
+}
+
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+  w.WriteHeader(http.StatusOK)
 }
 
 func lyricsHandler(w http.ResponseWriter, r *http.Request) {
