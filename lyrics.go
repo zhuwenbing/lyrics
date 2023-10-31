@@ -292,7 +292,7 @@ func getLyricsFromNet(title, artist string) (string, error) {
 }
 
 func saveLyricsToLrc(artist, title, lyrics string) {
-  if title == "" {
+  if title == "" || strings.TrimSpace(lyrics) == "" {
     return
   }
 
@@ -358,7 +358,7 @@ func initConfig() Config {
     Port:         0,  // default: 25775
     RedisAddress: "", // default: localhost:6379
     Token:        "",
-    Version:      "1.0.0",
+    Version:      "1.0.1",
     VersionFlag:  false,
   }
 
