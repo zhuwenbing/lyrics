@@ -1,5 +1,7 @@
 # 第一阶段：构建二进制文件
-FROM golang:alpine AS builder
+FROM --platform=$TARGETPLATFORM golang:alpine AS builder
+
+LABEL maintainer="Mr. Chu"
 
 # 设置工作目录
 WORKDIR /app
