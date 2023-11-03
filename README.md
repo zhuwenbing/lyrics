@@ -14,7 +14,7 @@ services:
     # command: lyrics --enable-auth --token=18QqYEwM96ePFEI1 --version
     container_name: lyrics
     environment:
-      # DYNAMIC_TOKEN: "false" # 是否启用动态token，需要搭配Redis使用，配默认false
+      # DYNAMIC_TOKEN: "false" # 是否启用动态token，需要搭配Redis使用，默认false
       ENABLE_AUTH: "true" # 是否开启鉴权，默认false
       # LYRICS_DIR: "/lyrics" # 歌词目录，默认“/lyrics”
       # PORT: 25775 # 歌词服务端口，默认25775
