@@ -32,6 +32,8 @@ services:
       my_bridge:
         aliases:
         - lyrics
+    ports:
+    - "8080:25775"
     restart: always
     user: 1000:1000
     volumes:
@@ -41,4 +43,8 @@ networks:
   my_bridge:
     driver: bridge
     name: my-bridge
+```
+### Usage
+```shell
+http://ip:8080/lyrics?title=冻结&artist=林俊杰
 ```
