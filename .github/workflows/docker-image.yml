@@ -2,6 +2,15 @@ name: Lyrics API Docker Image CI
 
 on:
   workflow_dispatch:
+    inputs:
+      target-name:
+        description: "A name for the target of 'docker/build-push-action'."
+        required: true
+        default: "lite"
+        type: choice
+        options:
+          - lite
+          - standard
   schedule:
     - cron: "30 6 * * *"
 
@@ -36,29 +45,28 @@ jobs:
       github.event_name != 'schedule' ||
       needs.check.outputs.needs-updating == 'true'
 
-    strategy:
-      matrix:
-        base-name: ["alpine", "scratch"]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set Variable target-name
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "target-name=${{ github.event.inputs.target-name }}" >> $GITHUB_ENV
+          else
+            echo "target-name=standard" >> $GITHUB_ENV
+          fi
 
       - name: Prepare
         id: prepare
         run: |
           REPOSITORY=${{ secrets.DOCKER_USERNAME }}
-          BUILDER=${{ matrix.base-name }}
-          RELEASE=${{ matrix.base-name }}
           IMAGE_NAME=lyrics
           VERSION=1.0.1
           TAGS="${REPOSITORY}/${IMAGE_NAME}:${VERSION},${REPOSITORY}/${IMAGE_NAME}:${VERSION}-alpine,${REPOSITORY}/${IMAGE_NAME}:alpine,${REPOSITORY}/${IMAGE_NAME}:latest"
-          if [[ ${{ matrix.base-name }} == "scratch" ]]; then
-            BUILDER="alpine"
+          if [[ ${{ env.target-name }} == "lite" ]]; then
             TAGS="${REPOSITORY}/${IMAGE_NAME}:${VERSION}-lite,${REPOSITORY}/${IMAGE_NAME}:lite"
           fi
-          echo "build_args.builder=BUILDER=${BUILDER}" >> $GITHUB_OUTPUT
-          echo "build_args.release=RELEASE=${RELEASE}" >> $GITHUB_OUTPUT
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
 
       - name: Set up QEMU
@@ -79,11 +87,9 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
+          target: ${{ env.target-name }}
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
-          build-args: |
-            ${{ steps.prepare.outputs.build_args.builder }}
-            ${{ steps.prepare.outputs.build_args.release }}
           tags: ${{ steps.prepare.outputs.tags }}
 
       - name: Clear
