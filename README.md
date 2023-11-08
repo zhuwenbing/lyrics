@@ -20,8 +20,9 @@ services:
       # PORT: 25775 # 歌词服务端口，默认25775
       # REDIS_ADDRESS: redis:6379 # Redis服务地址，默认localhost:6379
       TOKEN: 18QqYEwM96ePFEI1 # 固定token，仅当开启鉴权且未启用动态token时有效
-    healthcheck:
-      test: ["CMD", "wget", "-cqS", "--spider", "http://localhost:25775/"]
+    # 请注意：因lite版本基于scratch镜像所以没有健康检查
+    # healthcheck:
+    #   test: ["CMD", "wget", "-cqS", "--spider", "http://localhost:25775/"]
     image: kissice/lyrics
     logging:
       driver: json-file
